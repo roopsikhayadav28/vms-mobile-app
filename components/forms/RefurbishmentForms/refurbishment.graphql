@@ -1,0 +1,152 @@
+fragment RefurbishmentDetailsFrag on RefurbishmentDetails {
+  id
+  isRequired
+  requests {
+    id
+    requestStatus
+    transportationCharge
+    items {
+      id
+      price
+      status
+      refurbishmentProofUrl
+      quantity
+      product {
+        id
+        name
+        variant
+        description
+      }
+      expectedBuyingPrice
+    }
+    issue {
+      id
+      status
+      items {
+        id
+        price
+        quantity
+        product {
+          id
+          name
+          variant
+          description
+        }
+        quantity
+        isApproved
+      }
+    }
+    purchase {
+      id
+      status
+      items {
+        id
+        price
+        purchaseProofUrl
+        approvedPriceLimit
+        quantity
+        product {
+          id
+          name
+          variant
+          description
+        }
+        quantity
+        isApproved
+      }
+    }
+  }
+}
+
+query ProcurementCost($regNo: String!, $requestId: [ID!]) {
+  getLead(regNo: $regNo) {
+    id
+    regNo
+    source
+    sellingPrice
+    payments {
+      id
+      for
+      status
+      amount
+    }
+    refurbishmentDetails {
+      id
+      requests(filter: {id: $requestId}) {
+        id
+        requestStatus
+        transportationCharge
+        issue {
+          id
+          status
+          items {
+            id
+            price
+            isApproved
+            quantity
+            product {
+              id
+              name
+              variant
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getRequestItemFromLead($regNo: String!, $requestId: [ID!]!) {
+  getLead(regNo: $regNo) {
+    refurbishmentDetails {
+      requests(filter: {id: $requestId}) {
+        items {
+          id
+          status
+          installationProofUrl
+          product {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+query GetAllRefurbishmentBeneficiary {
+  queryRefurbishmentBeneficiary {
+    id
+    accountHolderName
+    accountNumber
+    ifscCode
+    bankName
+    proofUrl
+  }
+}
+
+query GetLeadRefurbishmentDetails($regNo: String!) {
+  queryLead(filter: {regNo: {anyofterms: $regNo}}) {
+    id
+    source
+    refurbishmentDetails {
+      ...RefurbishmentDetailsFrag
+    }
+  }
+}
+
+query GetInventoryDetails($centreId: ID!) {
+  inventoryDetails(centreId: $centreId) {
+    itemsAggregate {
+      count
+    }
+    items {
+      id
+      availableInStock
+      avgUnitPrice
+      product {
+        id
+        name
+      }
+    }
+  }
+}

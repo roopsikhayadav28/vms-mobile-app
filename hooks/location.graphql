@@ -1,0 +1,29 @@
+mutation UpdateUserLocation($userId: ID!, $location: PointRef!) {
+  updateUser(input: {filter: {id: [$userId]}, set: {location: $location}}) {
+    user {
+      ...LoggedInUser
+    }
+  }
+}
+
+mutation UpdateYardLocation($id: [ID!], $location: PointRef!) {
+  updateYard(input: {filter: {id: $id}, set: {location: $location}}) {
+    yard {
+      id
+      location {
+        longitude
+        latitude
+      }
+    }
+  }
+}
+
+fragment LoggedInUser on User {
+  id
+  name
+  phoneNo
+  email
+  role
+  avatar
+  expoPushNotificationAddress
+}

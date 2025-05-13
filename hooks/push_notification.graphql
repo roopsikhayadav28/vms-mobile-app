@@ -1,0 +1,22 @@
+fragment LoggedInUser on User {
+  id
+  name
+  phoneNo
+  email
+  role
+  avatar
+  expoPushNotificationAddress
+}
+
+mutation UpdatePushNotificationAddress($userId: ID!, $address: String) {
+  updateUser(
+    input: {
+      filter: {id: [$userId]}
+      set: {expoPushNotificationAddress: $address}
+    }
+  ) {
+    user {
+      ...LoggedInUser
+    }
+  }
+}

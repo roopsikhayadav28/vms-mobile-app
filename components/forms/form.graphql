@@ -1,0 +1,351 @@
+query AllCentres {
+  queryCentre {
+    id
+    name
+    location {
+      longitude
+      latitude
+    }
+    incharge {
+      id
+      name
+      email
+      centre {
+        id
+        name
+      }
+    }
+  }
+}
+
+query Drivers {
+  queryUser(filter: {role: {eq: DRIVER}}) {
+    id
+    name
+    pickups {
+      id
+      regNo
+    }
+    phoneNo
+  }
+}
+
+query DeliveryExpenses($id: ID!) {
+  getLead(id: $id) {
+    id
+    expenses {
+      id
+      category
+      createdAt
+      spentAmount
+      description
+      receiptUrl
+      paymentStatus
+    }
+  }
+}
+
+query GetAllYard {
+  queryYard(filter: {has: name}) {
+    id
+    name
+    perDayParkingCharge
+    tempPerDayParkingCharge
+    address
+    spocName
+    spocNo
+    city
+    locationUrl
+    location {
+      longitude
+      latitude
+    }
+  }
+}
+
+query GetAllRefurbishmentItem {
+  queryProduct {
+    id
+    name
+    description
+  }
+}
+
+query GetLeadDealDetails($id: ID!) {
+  getLead(id: $id) {
+    id
+    regNo
+    source
+    auctionByBank
+    demandAmount
+    proposedDealAmount
+    approvedDealAmount
+    documentCharges
+    tokenAmount
+    holdbackAmount
+    deliveryAmount
+    loanAmount
+    loanToBeClosedBy
+    paymentType
+    ...payments
+    vehicle {
+      id
+      manufacturingDate
+      make
+      model
+      engineNumber
+      chassisNumber
+      hoursMeter
+      isVehicleFinanced
+      financingDetails {
+        id
+        isLoanClosed
+        pendingLoanAmount
+        loanToBeClosedBy
+        tempLoanToBeClosedBy
+      }
+    }
+    finalBidAmount
+    proposedBidLimitAmount
+    createdAt
+    ownershipType
+    statusEvents {
+      id
+      status
+      remarks
+    }
+  }
+}
+
+query GetDriver($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+    yard {
+      id
+      locationUrl
+      name
+      location {
+        longitude
+        latitude
+      }
+    }
+    centre {
+      id
+      name
+      location {
+        longitude
+        latitude
+      }
+    }
+    pickup {
+      id
+      by {
+        id
+        name
+      }
+    }
+  }
+}
+
+query FinalCost($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+    proposedBidLimitAmount
+    finalBidAmount
+    holdbackAmount
+    documentCharges
+    dealerStance {
+      clearChallan
+      clearBlackList
+      clearHSRP
+    }
+
+    #first pickup date
+    expectedPickupDate
+    tokenAmount
+    pickup {
+      id
+      # second pickup date
+      pickupStartTime
+      pickEndTime
+    }
+    payments {
+      id
+      for
+      status
+      amount
+    }
+    yard {
+      id
+      tempPerDayParkingCharge
+      perDayParkingCharge
+    }
+    estimatedParkingCharges
+    actualParkingCharges
+    vehicle {
+      id
+      #first reposession date
+      repossessionDate
+      # second reposession date
+      tempRepossessionDate
+    }
+  }
+}
+
+query BookingPaymentDetails($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+    activeBooking {
+      ...ActiveBookingDetails
+    }
+  }
+}
+
+fragment ActiveBookingDetails on Booking {
+  id
+  deliveryPhotoUrl
+  createdAt
+  updatedAt
+  status
+  isRCTransferReq
+  isInsuranceReq
+  vehicleTransferFormUrl
+  cheque #to be deprecated
+  cancelledChequeUrl
+  archivedLoans(first: -1) {
+    id
+    rejectionReason
+    loanStatus
+  }
+  activeLoan {
+    ...ActiveLoanDetails
+  }
+  payments {
+    id
+    for
+    status
+    mode
+    amount
+    createdAt
+    proofUrl
+    paymentProcessedAt
+    confirmedBy {
+      id
+      name
+    }
+    receiptUrl
+    parkingBeneficiary {
+      id
+      accountHolderName
+    }
+  }
+  bookingPayment {
+    id
+    saleAmount
+    bookingType
+    bookingPaymentMode
+    totalSaleAmount
+    rcTransferAmount
+    insuranceAmount
+    appliedLoanAmount
+  }
+  customer {
+    id
+    updatedAt
+    name
+    phoneNo
+    state
+    district
+    customerId
+    idNumber
+    idProofUrl
+    createdAt
+    customerState {
+      state
+    }
+    customerDistrict {
+      name
+    }
+  }
+}
+
+query PickupData($leadId: ID!) {
+  getLead(id: $leadId) {
+    id
+    pickup {
+      id
+      by {
+        id
+        name
+      }
+      pickEndTime
+      pickupStartTime
+    }
+  }
+}
+
+query ModelByMake($make: String!) {
+  queryModelByMake(filter: {make: {alloftext: $make}}) {
+    make
+    model
+  }
+}
+
+query getDocumentsCheckListFromLead($leadId: [ID!]) {
+  queryLead(filter: {id: $leadId}) {
+    regNo
+    vehicle {
+      isRcAvailable
+      isVehicleInsured
+      isVehicleFinanced
+      financingDetails {
+        isLoanClosed
+      }
+    }
+  }
+}
+
+query getCoordinates($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+
+    yard {
+      id
+      location {
+        longitude
+        latitude
+      }
+      name
+    }
+    centre {
+      id
+      location {
+        longitude
+        latitude
+      }
+      name
+    }
+  }
+}
+
+fragment payments on Lead {
+  payments {
+    id
+    for
+    status
+    amount
+    receiptUrl
+    type
+    loanClosedBy
+    mode
+    parkingBeneficiary {
+      id
+      accountHolderName
+      accountNumber
+      bankName
+      ifscCode
+      upiId
+      proofUrl
+    }
+  }
+}

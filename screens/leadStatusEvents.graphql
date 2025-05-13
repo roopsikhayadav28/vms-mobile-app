@@ -1,0 +1,148 @@
+fragment LeadStatusEventDetails on LeadStatusEvent {
+  id
+  status
+  assignTaskTo
+  notifyTo
+  taskButtonTitle
+  taskTitle
+  createdBy {
+    id
+    name
+  }
+  createdAt
+  postTimeline
+  preTimeline
+  isTaskCompleted
+  remarks
+  metadata
+}
+
+fragment LeadStatusEventWithVehicleInfo on LeadStatusEvent {
+  id
+  status
+  assignTaskTo
+  notifyTo
+  taskButtonTitle
+  taskTitle
+  createdBy {
+    id
+    name
+  }
+  createdAt
+  lead {
+    id
+    regNo
+    vehicle {
+      id
+      make
+    }
+  }
+  remarks
+}
+
+mutation CreateLeadStatusEvent(
+  $lead: LeadRef!
+  $status: LeadStatus!
+  $myId: ID!
+  $createdAt: DateTime!
+  $remarks: String
+  $assignTaskTo: UserRole
+  $notifyTo: [UserRole]
+  $taskTitle: String
+  $taskButtonTitle: String
+  $metadata: String
+) {
+  addLeadStatusEvent(
+    input: {
+      lead: $lead
+      status: $status
+      assignTaskTo: $assignTaskTo
+      notifyTo: $notifyTo
+      taskTitle: $taskTitle
+      taskButtonTitle: $taskButtonTitle
+      createdBy: {id: $myId}
+      createdAt: $createdAt
+      remarks: $remarks
+      metadata: $metadata
+    }
+  ) {
+    leadStatusEvent {
+      lead {
+        id
+        regNo
+        expenses {
+          category
+        }
+      }
+      ...LeadStatusEventDetails
+    }
+  }
+}
+
+query stateInRegNo {
+  queryStateCodeWithRegNumber {
+    id
+    state
+    RTOCode
+  }
+}
+
+query LeadStatusFlow($source: LeadSource) {
+  queryLeadStatusFlow(filter: {source: {eq: $source}}) {
+    notificationTitle
+    notifyTo
+    taskTitle
+    assignTaskTo
+    next
+    current
+    previous
+    taskButtonTitle
+    taskFormActionTitle
+    taskFormNegativeActionTitle
+    isNegativeCase
+    canGoBack
+    desired
+    undesired
+    taskTitleWas
+    cta
+    taskPerformedBy
+    showPopup
+    showPopupWithInputField
+    popupTitle
+    popupDescription
+    hideForm
+    showPopupRemark
+    canGoForward
+    source
+    hideUndesiredButton
+  }
+}
+query DoneBySomeone($leadId: ID!, $desiredStatus: LeadStatus!) {
+  doneBySomeone(leadId: $leadId, desiredStatus: $desiredStatus) {
+    id
+    name
+    email
+  }
+}
+
+subscription UpdatesOnLeads($afterTime: DateTime!, $myRole: UserRole!) {
+  queryLeadStatusEvent(
+    filter: {
+      createdAt: {gt: $afterTime}
+      and: {or: [{assignTaskTo: {eq: $myRole}}, {notifyTo: {eq: $myRole}}]}
+    }
+  ) {
+    ...LeadStatusEventWithVehicleInfo
+  }
+}
+
+query GetPreAndPostTimelineOfALead($regNo: String!) {
+  queryLead(filter: {regNo: {allofterms: $regNo}}) {
+    id
+    statusEvents(first: -1) {
+      id
+      preTimeline
+      postTimeline
+    }
+  }
+}

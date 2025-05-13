@@ -1,0 +1,135 @@
+query StuckLeads {
+  queryLeadStatusEvent(filter: {not: {has: assignTaskTo}}) {
+    id
+    status
+    assignTaskTo
+    lead {
+      id
+      source
+    }
+  }
+}
+
+mutation UnstuckLead(
+  $lseId: ID!
+  $notifyTo: [UserRole]
+  $assignTaskTo: UserRole
+  $taskTitle: String
+  $taskButtonTitle: String
+) {
+  updateLeadStatusEvent(
+    input: {
+      filter: {id: [$lseId]}
+      set: {
+        notifyTo: $notifyTo
+        assignTaskTo: $assignTaskTo
+        taskTitle: $taskTitle
+        taskButtonTitle: $taskButtonTitle
+      }
+    }
+  ) {
+    leadStatusEvent {
+      id
+      status
+      assignTaskTo
+      notifyTo
+      taskTitle
+      taskButtonTitle
+    }
+  }
+}
+
+mutation SeedModelByMake($input: [AddModelByMakeInput!]!) {
+  addModelByMake(input: $input) {
+    modelByMake {
+      model
+      make
+    }
+  }
+}
+
+query FilterLeads(
+  $leadFilter: LeadFilter
+  $vehicleFilter: VehicleFilter
+  $centreFilter: CentreFilter
+  $cascade: [String]
+) {
+  queryLead(filter: $leadFilter, order: {desc: createdAt})
+    @cascade(fields: $cascade) {
+    id
+    regNo
+    source
+    registrationState
+    finalBidAmount
+    sellingPrice
+    listingPrice
+    vehicle(filter: $vehicleFilter) {
+      id
+      registrationNumber
+      make
+      model
+      manufacturingDate
+      price
+      owner {
+        id
+        district
+      }
+
+      images(first: 1) {
+        id
+        rightBodySide
+        frontBodySide
+      }
+    }
+    deliveryAmount
+    createdBy {
+      id
+      phoneNo
+      name
+    }
+    auctioningAgency {
+      id
+      name
+      spocNo
+    }
+    pickup {
+      by {
+        id
+        name
+        role
+      }
+    }
+    dealer {
+      id
+      phoneNo
+    }
+    centre(filter: $centreFilter) {
+      id
+      name
+    }
+    statusEvents(first: -1) {
+      ...LeadStatusEventDetails
+    }
+  }
+}
+
+mutation UpdateVehicleImagesCDN($id: ID!, $updatedValues: VehicleImagesPatch) {
+  updateVehicleImages(input: {filter: {id: [$id]}, set: $updatedValues}) {
+    vehicleImages {
+      id
+      odometer
+      chassisNumber
+      engineNumber
+      fuelInjectionPumpPlate
+      backBodySide
+      frontBodySide
+      leftBodySide
+      rightBodySide
+      backLeftTyre
+      backRightTyre
+      frontLeftTyre
+      frontRightTyre
+      inspectionVideoUrl
+    }
+  }
+}

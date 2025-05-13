@@ -1,0 +1,114 @@
+query getSaleStructureInfo($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+    regNo
+    listingPrice
+    activeBooking {
+      id
+      isRCTransferReq
+      isInsuranceReq
+    }
+  }
+}
+
+query getBookingPaymentForReview($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+    activeBooking {
+      id
+      payments {
+        id
+        for
+        amount
+        status
+        createdAt
+        mode
+      }
+    }
+  }
+}
+
+query getBookingLeadWithLoan($status: [LeadStatus], $sortByUpdatedAt: Boolean) {
+  filteredLeads(
+    leadFilters: {hasStatus: $status, sortByUpdatedAt: $sortByUpdatedAt}
+  ) {
+    id
+    regNo
+    registrationState
+    finalBidAmount
+    source
+    vehicle {
+      id
+      registrationNumber
+      make
+      model
+      manufacturingDate
+      price
+      owner {
+        id
+        district
+      }
+
+      images(first: 1) {
+        id
+        rightBodySide
+        frontBodySide
+      }
+    }
+    deliveryAmount
+    createdBy {
+      id
+      phoneNo
+      name
+    }
+    auctioningAgency {
+      id
+      name
+      spocNo
+    }
+    dealer {
+      id
+      phoneNo
+    }
+    statusEvents(first: -1) {
+      ...LeadStatusEventDetails
+    }
+    centre {
+      id
+      name
+    }
+  }
+}
+
+query getDeliveryPayment($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+    regNo
+
+    activeBooking {
+      payments {
+        amount
+        status
+      }
+      activeLoan {
+        appliedLoanAmount
+        sanctionedLoanAmount
+      }
+      isInsuranceReq
+      isRCTransferReq
+      bookingPayment {
+        saleAmount
+        bookingType
+      }
+    }
+  }
+}
+
+query getDistrict($state: String!) {
+  queryStateCodeWithRegNumber(filter: {state: {allofterms: $state}}) {
+    districts {
+      name
+      code
+    }
+  }
+}

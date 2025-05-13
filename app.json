@@ -1,0 +1,73 @@
+{
+  "expo": {
+    "name": "VMS",
+    "slug": "vms-mobile",
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "vms",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#2f95dc"
+    },
+    "jsEngine": "hermes",
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/84ba8b4a-a7f8-4acf-8c9b-e78cf2a11da2",
+      "checkAutomatically": "ON_LOAD"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tractorjunction.vms3",
+      "config": {
+          "googleMapsApiKey": "AIzaSyAp7BPMXJzhWG6BIfyWvAtv2TQjQdnIoPU"
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAp7BPMXJzhWG6BIfyWvAtv2TQjQdnIoPU"
+        }
+      },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#2f95dc"
+      },
+      "package": "com.tractorjunction.vms",
+      "googleServicesFile": "./google-services.json",
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          },
+          "android": {
+            "packagingOptions": {
+              "pickFirst": ["**/libjsc.so", "**/libc++_shared.so", "**/libfbjni.so", "**/llibturbomodulejsijni.so", "**/libturbomodulejsijni.so"]
+            }
+          }
+        }
+      ],
+      "sentry-expo",
+      "./react-native-maps-config"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "84ba8b4a-a7f8-4acf-8c9b-e78cf2a11da2"
+      }
+    },
+    "owner": "farm-junction",
+    "runtimeVersion": "1.0.0"
+  }
+}

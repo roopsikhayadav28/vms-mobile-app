@@ -1,0 +1,57 @@
+fragment LoggedInUser on User {
+  id
+  name
+  phoneNo
+  email
+  role
+  avatar
+  expoPushNotificationAddress
+}
+query CheckUserAuth($email: String!) {
+  getUser(email: $email) {
+    ...LoggedInUser
+  }
+}
+
+mutation UpdatePushNotificationToken(
+  $email: String!
+  $expoPushNotificationAddress: String!
+) {
+  updateUser(
+    input: {
+      filter: {email: {eq: $email}}
+      set: {expoPushNotificationAddress: $expoPushNotificationAddress}
+    }
+  ) {
+    user {
+      ...LoggedInUser
+    }
+  }
+}
+
+mutation CreateFakeUserWithRole(
+  $role: UserRole
+  $fakeEmail: String!
+  $fakeName: String!
+  $pnsToken: String
+  $phoneNo: String!
+) {
+  addUser(
+    upsert: true
+    input: {
+      email: $fakeEmail
+      name: $fakeName
+      role: $role
+      expoPushNotificationAddress: $pnsToken
+      phoneNo: $phoneNo
+    }
+  ) {
+    user {
+      id
+      name
+      email
+      expoPushNotificationAddress
+      role
+    }
+  }
+}

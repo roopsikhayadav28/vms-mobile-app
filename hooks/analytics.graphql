@@ -1,0 +1,39 @@
+query LeadsStatusCount {
+  queryLead(first: 10, order: {desc: createdAt}) {
+    regNo
+    statusEventsAggregate {
+      count
+    }
+    statusEvents(first: -1) {
+      id
+      status
+    }
+  }
+}
+
+query NoOfNewUpdates($myRole: [UserRole], $afterTime: DateTime) {
+  aggregateLeadStatusEvent(
+    filter: {notifyTo: {in: $myRole}, createdAt: {gt: $afterTime}}
+  ) {
+    count
+  }
+}
+query UsersTaskDuration($userID: ID) {
+  getUser(id: $userID) {
+    id
+    punchedEvents(first: 10, order: {desc: createdAt}) {
+      id
+      status
+      createdAt
+      lead {
+        id
+        regNo
+      }
+      previous {
+        id
+        status
+        createdAt
+      }
+    }
+  }
+}

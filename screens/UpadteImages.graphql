@@ -1,0 +1,68 @@
+fragment VehicleImagesDetails on VehicleImages {
+  id
+  backBodySide
+  leftBodySide
+  frontBodySide
+  rightBodySide
+  backRightTyre
+  frontRightTyre
+  backRightTyre
+  fuelInjectionPumpPlate
+  odometer
+  inspectionVideoUrl
+  backLeftTyre
+  frontLeftTyre
+  engineNumber
+  backRightTyre
+  chassisNumber
+  imagesTakenAtStage
+}
+mutation UpdateVehicleImages(
+  $UpdateVehicleImagesPatch: VehicleImagesPatch
+  $imageStage: ImageStage_hash
+  $vehicleImageID: [ID!]
+) {
+  updateVehicleImages(
+    input: {
+      filter: {and: {imagesTakenAtStage: $imageStage, id: $vehicleImageID}}
+      set: $UpdateVehicleImagesPatch
+    }
+  ) {
+    vehicleImages {
+      ...VehicleImagesDetails
+      vehicle {
+        id
+      }
+    }
+  }
+}
+
+mutation AddVehicleImages($input: AddVehicleImagesInput!) {
+  addVehicleImages(input: [$input], upsert: true) {
+    vehicleImages {
+      ...VehicleImagesDetails
+      vehicle {
+        id
+      }
+    }
+  }
+}
+
+# mutation updateImages($vehicleImagesPatch: AddVehicleImagesInput!) {
+#   addVehicleImages(upsert: true, input: [$vehicleImagesPatch]) {
+#     vehicleImages {
+#       id
+
+#       imagesTakenAtStage
+#       vehicle {
+#         regNo
+#       }
+#       odometer
+#       inspectionVideoUrl
+#       backBodySide
+#       backLeftTyre
+#       backRightTyre
+#       chassisNumber
+#     }
+#   }
+# }

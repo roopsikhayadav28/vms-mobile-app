@@ -1,0 +1,110 @@
+fragment TaskDetails on Task {
+  id
+  title
+  subtitle
+  leadStatusEvent {
+    id
+    status
+    lead {
+      id
+      regNo
+    }
+  }
+  createdAt
+  completedAt
+  assignedTo(filter: {id: [$myId]}) {
+    id
+    name
+  }
+}
+
+query AllTasks($myId: ID!) {
+  queryTask {
+    ...TaskDetails
+  }
+}
+
+query MyPendingTasks($myId: ID!, $offset: Int = 0, $role: UserRole!) {
+  myPendingTasks(userId: $myId, role: $role, offset: $offset) {
+    id
+    createdAt
+    createdBy {
+      id
+      name
+      email
+    }
+    status
+    assignTaskTo
+    notifyTo
+    taskTitle
+    taskButtonTitle
+    lead {
+      id
+      regNo
+      createdBy {
+        id
+      }
+      vehicle {
+        id
+        make
+      }
+    }
+  }
+}
+
+query NumberOfPendingTasks($myId: ID!, $role: UserRole!) {
+  numberOfPendingTasks(userId: $myId, role: $role) {
+    count
+  }
+}
+
+query PunchedEvents($myId: ID!) {
+  getUser(id: $myId) {
+    id
+    punchedEvents {
+      id
+      status
+      createdAt
+    }
+    punchedEventsAggregate {
+      count
+    }
+  }
+}
+
+query SearchTasksForDriver(
+  $username: String!
+  $userRole: UserRole
+  $offset: Int = 0
+) {
+  queryLead(order: {desc: createdAt}, offset: $offset, first: 10)
+    @cascade(fields: ["pickup"]) {
+    id
+    regNo
+    vehicle {
+      id
+      make
+    }
+    pickup @cascade(fields: ["by"]) {
+      by(filter: {role: {eq: $userRole}, name: {allofterms: $username}}) {
+        id
+        name
+        role
+      }
+    }
+    statusEvents(first: -1) {
+      id
+      createdAt
+      createdBy {
+        id
+        name
+        email
+      }
+      status
+      assignTaskTo
+      notifyTo
+      taskTitle
+      taskButtonTitle
+    }
+  }
+}

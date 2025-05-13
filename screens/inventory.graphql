@@ -1,0 +1,129 @@
+query GetStocksDetails($centreId: ID) {
+  inventoryDetails(centreId: $centreId) {
+    items {
+      availableInStock
+      avgUnitPrice
+      consumed
+      createdAt
+      id
+      totalPurchase
+      totalPrice
+      purchaseQueue
+      product {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetStocksTypeDetails($productId: [ID!]!, $centreId: String) {
+  queryPurchase @cascade(fields: ["items", "centre"]) {
+    status
+    id
+    centre(filter: {name: {allofterms: $centreId}}) {
+      id
+      name
+    }
+    madeBy {
+      id
+      name
+    }
+
+    createdAt
+
+    items @cascade(fields: "product") {
+      id
+      quantity
+      product(filter: {id: $productId}) {
+        id
+        name
+      }
+    }
+  }
+  queryIssue @cascade(fields: ["items", "centre"]) {
+    status
+    id
+    centre(filter: {name: {allofterms: $centreId}}) {
+      id
+      name
+    }
+    madeBy {
+      id
+      name
+    }
+    createdAt
+    items @cascade(fields: "product") {
+      id
+      quantity
+      product(filter: {id: $productId}) {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetIssueItemDetails($purchaseId: ID!) {
+  getIssue(id: $purchaseId) {
+    status
+    id
+    madeBy {
+      id
+      name
+    }
+    centre {
+      id
+      name
+    }
+    createdAt
+
+    items {
+      quantity
+
+      product {
+        id
+        name
+        description
+        variant
+      }
+    }
+  }
+}
+
+query GetPurchaseItemDetails($purchaseId: ID!) {
+  getPurchase(id: $purchaseId) {
+    status
+    id
+    madeBy {
+      id
+      name
+    }
+    centre {
+      id
+      name
+    }
+    createdAt
+
+    items {
+      quantity
+
+      product {
+        id
+        name
+        description
+        variant
+      }
+    }
+  }
+}
+
+query getCenterFormLead($regNo: String!) {
+  getLead(regNo: $regNo) {
+    regNo
+    centre {
+      id
+      name
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "cli": {
+    "version": ">= 2.9.0"
+  },
+  "build": {
+    "development": {
+      "distribution": "internal",
+      "android": {
+        "gradleCommand": ":app:assembleDebug"
+      },
+      "ios": {
+        "buildConfiguration": "Debug"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview"
+    },
+    "staging": {
+      "distribution": "internal",
+      "channel": "staging",
+      "android": {
+       "buildType": "apk",
+       "image": "latest"
+      }
+    },
+    "production": {
+      "distribution": "internal",
+      "channel": "production"
+    },
+    "experimental": {
+      "distribution": "internal",
+      "channel": "experimental"
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

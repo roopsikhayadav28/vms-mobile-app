@@ -1,0 +1,71 @@
+query popupDynamicValues($regNo: String!, $requestId: [ID!]) {
+  getLead(regNo: $regNo) {
+    id
+    regNo
+    payments {
+      id
+      status
+      amount
+      for
+    }
+    activeBooking {
+      isRCTransferReq
+      isInsuranceReq
+      id
+      payments {
+        id
+        for
+        status
+        amount
+      }
+      activeLoan {
+        id
+        sanctionedLoanAmount
+      }
+    }
+    proposedBidLimitAmount
+    demandAmount
+    approvedDealAmount
+    proposedDealAmount
+    expenses {
+      id
+      paymentStatus
+      spentAmount
+    }
+    refurbishmentDetails {
+      id
+      requests(filter: {id: $requestId}) {
+        id
+        transportationCharge
+        items {
+          id
+          status
+          price
+        }
+        purchase {
+          id
+          status
+          items {
+            isApproved
+            id
+            price
+            approvedPriceLimit
+            purchaseProofUrl
+          }
+        }
+      }
+    }
+    finalBidAmount
+    pickup {
+      id
+      by {
+        id
+        name
+      }
+    }
+    statusEventsAggregate {
+      count
+    }
+    deliveryAmount
+  }
+}

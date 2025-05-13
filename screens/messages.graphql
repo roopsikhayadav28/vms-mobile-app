@@ -1,0 +1,41 @@
+fragment MessageDetails on Message {
+  id
+  text
+  sentBy {
+    id
+    name
+    phoneNo
+    email
+    role
+    avatar
+  }
+  createdAt
+}
+
+mutation SendMessage($message: AddMessageInput!) {
+  addMessage(input: [$message]) {
+    message {
+      ...MessageDetails
+    }
+  }
+}
+
+query AllMessages($offset: Int = 0, $afterTime: DateTime) {
+  queryMessage(
+    order: {desc: createdAt}
+    first: 10
+    offset: $offset
+    filter: {createdAt: {gt: $afterTime}}
+  ) {
+    ...MessageDetails
+  }
+}
+
+subscription NewMessages($afterTime: DateTime) {
+  queryMessage(
+    order: {desc: createdAt}
+    filter: {createdAt: {gt: $afterTime}}
+  ) {
+    ...MessageDetails
+  }
+}

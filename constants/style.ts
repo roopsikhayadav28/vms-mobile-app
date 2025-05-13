@@ -1,0 +1,76 @@
+import {StyleSheet} from 'react-native'
+import Colors from './Colors'
+import Layout from './Layout'
+
+export const commonStyle = StyleSheet.create({
+  mainAppContainer: {
+    flex: 1,
+    backgroundColor: Colors.light.background,
+  },
+  textWhite: {color: Colors.light.background},
+  textDark: {
+    color: Colors.dark.text,
+  },
+  buttonView: {
+    width: Layout.window.width,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: Layout.baseSize / 2,
+    // paddingBottom: Layout.baseSize,
+    backgroundColor: Colors.light.background,
+    elevation: 1,
+  },
+  noFlex: {flex: 0},
+  textAlignCenter: {textAlign: 'center'},
+  positionAbsolute: {position: 'absolute'},
+  noPaddingLeft: {
+    paddingLeft: 0,
+  },
+  centeredAlignItem: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  flexRow: {flexDirection: 'row'},
+  flexColumn: {flexDirection: 'column'},
+  alginCenter: {alignSelf: 'center'},
+  flex1: {flex: 1},
+  fullFlexWithCenterView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sectionStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'stretch',
+  },
+
+  marginHorizontal30: {marginHorizontal: 30},
+  margin8: {margin: 8},
+  marginHalf: {margin: Layout.baseSize * 0.5},
+  margin16: {margin: 16},
+  marginTop5: {marginTop: 5},
+  marginTop10: {marginTop: 10},
+  marginTop15: {marginTop: 15},
+  marginVertical5: {marginVertical: 5},
+  marginVertical8: {marginVertical: 8},
+  marginVertical15: {marginVertical: 15},
+  marginRight20: {marginRight: 20},
+  marginBottom5: {marginBottom: 5},
+  marginBottom16: {marginBottom: 16},
+  paddingVertical16: {paddingVertical: 16},
+  paddingVertical20: {paddingVertical: 20},
+  paddingBottom16: {paddingBottom: 16},
+  leftPadding5: {paddingLeft: 5},
+  paddingBottom30: {paddingBottom: 30},
+  leftPadding20: {paddingLeft: 20},
+  padding16: {padding: 16},
+  bold400: {fontWeight: '400'},
+  bold500: {fontWeight: '500'},
+  bold600: {fontWeight: '600'},
+  bold700: {fontWeight: '700'},
+  bold800: {fontWeight: '800'},
+  bold900: {fontWeight: '900'},
+})

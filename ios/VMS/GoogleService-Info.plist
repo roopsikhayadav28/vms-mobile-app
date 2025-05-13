@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>957271575147-c229ps5u0kub8srpp837g06iocr5sldf.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.957271575147-c229ps5u0kub8srpp837g06iocr5sldf</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>957271575147-hl1r845nf7evv6g153hkm90109io0mn4.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCSddsrMmcBEIeGD6AbbFvuo5IzpErPlbY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>957271575147</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.tractorjunction.vms3</string>
+	<key>PROJECT_ID</key>
+	<string>vehicle-management-syste-e1fe0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>vehicle-management-syste-e1fe0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:957271575147:ios:7a6cb94178eae41cdb3f2e</string>
+</dict>
+</plist>

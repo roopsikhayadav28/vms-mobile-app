@@ -1,0 +1,1364 @@
+fragment LeadStatusEventDetails on LeadStatusEvent {
+  id
+  status
+  assignTaskTo
+  notifyTo
+  taskButtonTitle
+  taskTitle
+  createdBy {
+    id
+    name
+  }
+  createdAt
+  postTimeline
+  preTimeline
+  isTaskCompleted
+  remarks
+  metadata
+}
+
+query GetDocumentsCheckList($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+    regNo
+    source
+    documentChecklist {
+      id
+      form30
+      sellerPAN
+      form60
+      sellerAadharCard
+      ownerAddressProof
+      releaseOrder
+      indemnityBond
+      registrationCertificate
+      form26
+      loanForeclosure
+      bankNOC
+      form35
+      insuranceCertificate
+      form28
+      form29
+    }
+  }
+}
+
+mutation UpdateDocumentsCheckList(
+  $documentCheckListPatch: DocumentChecklistPatch
+  $regNo: String!
+) {
+  updateDocumentChecklist(
+    input: {filter: {regNo: {eq: $regNo}}, set: $documentCheckListPatch}
+  ) {
+    documentChecklist {
+      id
+      bankNOC
+      form26
+      form28
+      form29
+      form35
+      sellerPAN
+      sellerAadharCard
+      releaseOrder
+      registrationCertificate
+    }
+  }
+}
+
+fragment LeadPreview on Lead {
+  id
+  regNo
+  registrationState
+  finalBidAmount
+  source
+  vehicle {
+    id
+    registrationNumber
+    make
+    model
+    manufacturingDate
+    price
+    owner {
+      id
+      district
+    }
+
+    images(first: 1) {
+      id
+      rightBodySide
+      frontBodySide
+    }
+  }
+  deliveryAmount
+  createdBy {
+    id
+    phoneNo
+    name
+  }
+  auctioningAgency {
+    id
+    name
+    spocNo
+  }
+  pickup {
+    id
+    by {
+      id
+      name
+      role
+    }
+  }
+  dealer {
+    id
+    phoneNo
+  }
+  statusEvents(first: -1) {
+    ...LeadStatusEventDetails
+  }
+}
+
+# (leadFilters: {hasStatus: $hasStatus})
+
+query Inventory($centreName: String!) {
+  queryLead(filter: {has: centre}) @cascade(fields: ["centre"]) {
+    ...LeadPreview
+    centre(filter: {name: {allofterms: $centreName}}) {
+      id
+      name
+    }
+  }
+}
+query FilteredInventory(
+  $centreName: [String!]
+  $status: [LeadStatus]
+  $sortByUpdatedAt: Boolean
+) {
+  filteredLeads(
+    leadFilters: {
+      hasStatus: $status
+      centreName: $centreName
+      sortByUpdatedAt: $sortByUpdatedAt
+    }
+  ) @cascade(fields: ["centre"]) {
+    id
+    regNo
+    registrationState
+    finalBidAmount
+    source
+    vehicle {
+      id
+      registrationNumber
+      make
+      model
+      manufacturingDate
+      price
+      owner {
+        id
+        district
+      }
+
+      images(first: 1) {
+        id
+        rightBodySide
+        frontBodySide
+      }
+    }
+    deliveryAmount
+    createdBy {
+      id
+      phoneNo
+      name
+    }
+    auctioningAgency {
+      id
+      name
+      spocNo
+    }
+    dealer {
+      id
+      phoneNo
+    }
+    statusEvents(first: -1) {
+      ...LeadStatusEventDetails
+    }
+    centre {
+      id
+      name
+    }
+  }
+}
+
+query GetAllInventory {
+  queryLead(filter: {has: centre}) {
+    ...LeadPreview
+    centre {
+      id
+      name
+    }
+  }
+}
+
+fragment LeadDetails on Lead {
+  id
+  regNo
+  registrationState
+  listingPrice
+  dealer {
+    id
+    phoneNo
+  }
+  loanAmount
+  source
+  auctionByBank
+  proposedBidLimitAmount
+  finalBidAmount
+  expectedPickupDate
+  actualParkingCharges
+  demandAmount
+  paymentType
+  finalParkingCharges
+  estimatedParkingCharges
+  deliveryAmount
+  documentCharges
+  holdbackAmount
+  tokenAmount
+  loanToBeClosedBy
+  approvedDealAmount
+  proposedDealAmount
+  listingPrice
+  sellingPrice
+  createdAt
+  dealer {
+    id
+    name
+  }
+  documentChecklist {
+    id
+    form30
+    sellerPAN
+    form60
+    sellerAadharCard
+    ownerAddressProof
+    releaseOrder
+    indemnityBond
+    registrationCertificate
+    form26
+    loanForeclosure
+    bankNOC
+    form35
+    insuranceCertificate
+    form28
+    form29
+  }
+  documents {
+    ...LeadDocumentsDetails
+  }
+  refurbishmentDetails {
+    ...RefurbishmentRequestDetails
+  }
+  activeBooking {
+    ...ActiveBookingDetails
+  }
+
+  vehicle {
+    id
+    repossessionDate
+    tempRepossessionDate
+    isHypo
+    isChallanAvailable
+    isBlacklisted
+    isHSRPAvailable
+    registrationNumber
+    fitnessValidUpto
+    isRcAvailable
+    isVehicleFinanced
+    tempIsVehicleFinanced
+    isVehicleInsured
+    challanAmount
+    engineNumber
+    make
+    model
+    manufacturingDate
+    registrationDate
+    repossessionDate
+    tempRepossessionDate
+    tempModel
+    tempMake
+    tempChassisNumber
+    tempEngineNumber
+    tempRepossessionDate
+    tempManufacturingDate
+    documents {
+      id
+      registrationCertificateUrl
+      approvalMailUrl
+      hypothecationProofUrl
+      rtoVerificationProofUrl
+      hsrbProofUrl
+      challanUrl
+      blacklistProofUrl
+      fitnessCertificateValidUpto
+    }
+
+    financingDetails {
+      id
+      isLoanClosed
+      pendingLoanAmount
+      loanToBeClosedBy
+      tempLoanToBeClosedBy
+      financerName
+      tempFinancerName
+    }
+    insuranceDetails {
+      id
+      insurerName
+      insuranceType
+      policyNumber
+      policyExpiryDate
+    }
+    chassisNumber
+    typeCondition
+    price
+    owner {
+      id
+      district
+    }
+    images(first: -1) {
+      ...VehicleImagesDetails
+      vehicle {
+        id
+        registrationNumber
+      }
+    }
+  }
+  auctioningAgency {
+    id
+    name
+    spocNo
+  }
+  createdBy {
+    id
+    phoneNo
+    name
+  }
+  payments(order: {desc: createdAt}) {
+    id
+    for
+    status
+    amount
+    createdAt
+    mode
+    proofUrl
+    accountHolderName
+    bankName
+    ifsc
+    accountNo
+    upiId
+    receiptUrl
+    paymentProcessedAt
+    amount
+    type
+    loanClosedBy
+    parkingBeneficiary {
+      id
+      accountHolderName
+      accountNumber
+      bankName
+      ifscCode
+      upiId
+      proofUrl
+    }
+    by {
+      id
+      name
+    }
+  }
+  expenses {
+    id
+    description
+    spentAmount
+    category
+    receiptUrl
+    createdAt
+    paymentStatus
+  }
+  centre {
+    id
+    name
+    address
+    location {
+      longitude
+      latitude
+    }
+  }
+  yard {
+    id
+    name
+    address
+    locationUrl
+    location {
+      longitude
+      latitude
+    }
+    perDayParkingCharge
+    tempPerDayParkingCharge
+    city
+    address
+    spocName
+    spocNo
+    locationUrl
+  }
+  centre {
+    id
+    name
+  }
+  pickup {
+    id
+    by {
+      id
+      name
+      phoneNo
+    }
+  }
+  parkingBeneficiary {
+    id
+    bankName
+    accountHolderName
+    accountNumber
+    ifscCode
+  }
+  refurbishmentDetails {
+    id
+    requests {
+      id
+      transportationCharge
+      items {
+        id
+        price
+        product {
+          id
+          name
+        }
+        installationProofUrl
+      }
+      issue {
+        id
+        items {
+          id
+          price
+          product {
+            id
+            name
+          }
+        }
+      }
+      purchase {
+        id
+        items {
+          id
+          price
+          purchaseProofUrl
+          approvedPriceLimit
+          product {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+  statusEvents(order: {desc: createdAt}) {
+    ...LeadStatusEventDetails
+  }
+  refurbishmentDetails {
+    id
+    requests {
+      id
+      purchase {
+        id
+        items {
+          id
+          purchaseProofUrl
+        }
+      }
+    }
+  }
+  activeBooking {
+    id
+    activeLoan {
+      id
+      loginDate
+      fieldInspectionDate
+      fieldInspectionConfirmedDate
+      deliveryOrderDate
+    }
+  }
+}
+query getAllParkingBeneficiary {
+  queryParkingBeneficiary {
+    id
+    accountHolderName
+    accountNumber
+    ifscCode
+    bankName
+    proofUrl
+  }
+}
+fragment VehicleImagesDetails on VehicleImages {
+  id
+  backBodySide
+  leftBodySide
+  frontBodySide
+  rightBodySide
+  backRightTyre
+  frontRightTyre
+  backRightTyre
+  fuelInjectionPumpPlate
+  odometer
+  inspectionVideoUrl
+  backLeftTyre
+  frontLeftTyre
+  engineNumber
+  backRightTyre
+  chassisNumber
+  imagesTakenAtStage
+}
+
+fragment RefurbishmentRequestDetails on RefurbishmentDetails {
+  isRequired
+  requests {
+    id
+    requestStatus
+    createdAt
+    issue {
+      id
+      status
+      items {
+        id
+        price
+        isApproved
+        quantity
+        product {
+          id
+          name
+          variant
+        }
+      }
+    }
+    purchase {
+      id
+      totalPrice
+      createdAt
+      items {
+        id
+        purchaseProofUrl
+      }
+      payment {
+        id
+        for
+        status
+        amount
+        createdAt
+        paymentProcessedAt
+        receiptUrl
+        proofUrl
+        mode
+        modeFM
+        source
+        paymentTo
+        accountHolderName
+        bankName
+        accountNo
+        ifsc
+        upiId
+        refurbishmentBeneficiary {
+          id
+          accountHolderName
+          accountNumber
+          bankName
+          ifscCode
+          upiId
+          proofUrl
+        }
+      }
+    }
+    items {
+      id
+      price
+      refurbishmentProofUrl
+      installationProofUrl
+      status
+      product {
+        id
+        name
+        description
+      }
+    }
+  }
+}
+
+fragment ActiveBookingDetails on Booking {
+  id
+  deliveryPhotoUrl
+  createdAt
+  updatedAt
+  status
+  isRCTransferReq
+  isInsuranceReq
+  vehicleTransferFormUrl
+  cheque #to be deprecated
+  cancelledChequeUrl
+  archivedLoans(first: -1) {
+    id
+    rejectionReason
+    loanStatus
+  }
+  activeLoan {
+    ...ActiveLoanDetails
+  }
+  payments {
+    id
+    for
+    status
+    mode
+    amount
+    createdAt
+    proofUrl
+    paymentProcessedAt
+    confirmedBy {
+      id
+      name
+    }
+    receiptUrl
+    parkingBeneficiary {
+      id
+      accountHolderName
+    }
+  }
+  bookingPayment {
+    id
+    saleAmount
+    bookingType
+    bookingPaymentMode
+    totalSaleAmount
+    rcTransferAmount
+    insuranceAmount
+    appliedLoanAmount
+  }
+  customer {
+    id
+    updatedAt
+    name
+    phoneNo
+    state
+    district
+    customerId
+    idNumber
+    idProofUrl
+    createdAt
+    customerState {
+      state
+    }
+    customerDistrict {
+      name
+    }
+  }
+}
+
+fragment ActiveLoanDetails on Loan {
+  id
+  deliveryOrderDate
+  loanStatus
+  fieldInspectionConfirmedDate
+  deliveryOrderValidity
+  sanctionedLoanAmount
+  deliveryOrderDocUrl
+  createdAt
+  updatedAt
+  rejectedAt
+  rejectionReason
+  loginStatus
+  fieldInspectionStatus
+  deliveryOrderStatus
+  appliedLoanAmount
+  loanStage
+  bankName
+  loginDate
+  loginApplicationFormUrl
+  fieldInspectionDate
+}
+query AllImages($regNo: String!, $hasDeliveryPhoto: Boolean!) {
+  getLead(regNo: $regNo) {
+    id
+    deliveredSelfieUrl
+    activeBooking @include(if: $hasDeliveryPhoto) {
+      id
+      deliveryPhotoUrl
+    }
+  }
+  getVehicle(regNo: $regNo) {
+    id
+    regNo
+    images {
+      ...VehicleImagesDetails
+    }
+  }
+}
+query AllLeads($offset: Int = 0) {
+  queryLead(order: {desc: createdAt}, offset: $offset, first: 10) {
+    ...LeadPreview
+  }
+}
+
+query filteredLeads($hasStatus: [LeadStatus], $sortByUpdatedAt: Boolean) {
+  filteredLeads(
+    leadFilters: {hasStatus: $hasStatus, sortByUpdatedAt: $sortByUpdatedAt}
+  ) {
+    id
+    regNo
+    registrationState
+    finalBidAmount
+    source
+    vehicle {
+      id
+      registrationNumber
+      make
+      model
+      manufacturingDate
+      price
+      owner {
+        id
+        district
+      }
+
+      images(first: 1) {
+        id
+        rightBodySide
+        frontBodySide
+      }
+    }
+    deliveryAmount
+    createdBy {
+      id
+      phoneNo
+      name
+    }
+    auctioningAgency {
+      name
+      spocNo
+    }
+    dealer {
+      id
+      phoneNo
+    }
+    statusEvents(first: -1) {
+      ...LeadStatusEventDetails
+    }
+  }
+}
+
+query LeadsForPE($offset: Int = 0, $peId: ID!) {
+  queryLead(order: {desc: createdAt}, offset: $offset, first: 10)
+    @cascade(fields: ["createdBy"]) {
+    id
+    regNo
+    registrationState
+    source
+    finalBidAmount
+    auctioningAgency {
+      id
+      name
+      spocNo
+    }
+    dealer {
+      id
+      phoneNo
+    }
+    vehicle {
+      id
+      registrationNumber
+      make
+      model
+      manufacturingDate
+      price
+      owner {
+        id
+        district
+      }
+      images(first: 1) {
+        id
+        rightBodySide
+        frontBodySide
+      }
+    }
+    deliveryAmount
+    createdBy(filter: {id: [$peId]}) {
+      id
+      name
+    }
+    statusEvents(first: -1) {
+      ...LeadStatusEventDetails
+    }
+  }
+}
+
+query LeadsForDriver($offset: Int = 0, $driverId: ID!) {
+  queryLead(order: {desc: createdAt}, offset: $offset, first: 10)
+    @cascade(fields: ["pickup"]) {
+    id
+    regNo
+    source
+    registrationState
+    finalBidAmount
+    auctioningAgency {
+      id
+      name
+      spocNo
+    }
+    vehicle {
+      id
+      registrationNumber
+      make
+      model
+      manufacturingDate
+      price
+      owner {
+        id
+        district
+      }
+
+      images(first: 1) {
+        id
+        rightBodySide
+        frontBodySide
+      }
+    }
+    deliveryAmount
+    createdBy {
+      id
+      name
+    }
+    pickup @cascade(fields: ["by"]) {
+      id
+      by(filter: {id: [$driverId]}) {
+        id
+        name
+      }
+    }
+    statusEvents(first: -1) {
+      ...LeadStatusEventDetails
+    }
+  }
+}
+
+# query SearchLeads($searchText: String!) {
+#   queryLead(filter: { : { alloftext: $searchText } }) {
+#     ...LeadPreview
+#   }
+# }
+
+query SearchLeads($searchText: String!) {
+  queryLead(filter: {searchString: {regexp: $searchText}}) {
+    ...LeadPreview
+  }
+}
+
+query SearchLeadsForPE($searchText: String!, $peId: ID!) {
+  queryLead(
+    order: {desc: createdAt}
+    filter: {searchString: {regexp: $searchText}}
+  ) @cascade(fields: ["createdBy"]) {
+    id
+    regNo
+    registrationState
+    source
+    finalBidAmount
+    dealer {
+      id
+      phoneNo
+    }
+    vehicle {
+      id
+      registrationNumber
+      make
+      model
+      manufacturingDate
+      price
+      owner {
+        id
+        district
+      }
+      images(first: 1) {
+        id
+        rightBodySide
+        frontBodySide
+      }
+    }
+    auctioningAgency {
+      id
+      name
+      spocNo
+    }
+    deliveryAmount
+    createdBy(filter: {id: [$peId]}) {
+      id
+      name
+    }
+    statusEvents(first: -1) {
+      ...LeadStatusEventDetails
+    }
+  }
+}
+
+query SearchLeadsForDriver($searchText: String!, $peId: ID!) {
+  queryLead(
+    order: {desc: createdAt}
+    filter: {searchString: {regexp: $searchText}}
+  ) @cascade(fields: ["pickup"]) {
+    id
+    regNo
+    source
+    finalBidAmount
+    vehicle {
+      id
+      registrationNumber
+      make
+      model
+      manufacturingDate
+      price
+      owner {
+        id
+        district
+      }
+      images(first: 1) {
+        id
+        rightBodySide
+        frontBodySide
+      }
+    }
+    auctioningAgency {
+      id
+      name
+      spocNo
+    }
+    deliveryAmount
+    pickup @cascade(fields: ["by"]) {
+      by(filter: {id: [$peId]}) {
+        name
+        role
+        id
+      }
+    }
+    createdBy {
+      id
+      name
+    }
+    statusEvents(first: -1) {
+      ...LeadStatusEventDetails
+    }
+  }
+}
+
+query GetLeadDetails($regNo: String!) {
+  getLead(regNo: $regNo) {
+    ...LeadDetails
+  }
+}
+
+query GetVehicleRefurbishmentDetails($regNo: String!, $requestId: [ID!]) {
+  getLead(regNo: $regNo) {
+    id
+    regNo
+    refurbishmentDetails {
+      id
+      requests(filter: {id: $requestId}) {
+        id
+        transportationCharge
+        hasTransportationCharge
+        items {
+          id
+          price
+          product {
+            id
+            name
+          }
+          installationProofUrl
+        }
+        issue {
+          id
+          items {
+            id
+            price
+            product {
+              id
+              name
+            }
+          }
+        }
+        purchase {
+          id
+          items {
+            id
+            price
+            purchaseProofUrl
+            approvedPriceLimit
+            product {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#TODO: WIP: Filter Query
+query FilterLeadsByStatus($status: [LeadStatus!]) {
+  queryLeadStatusEvent(
+    filter: {and: [{status: {in: $status}}, {isTaskCompleted: false}]}
+  ) {
+    id
+    lead {
+      ...LeadPreview
+    }
+  }
+}
+
+fragment LeadDocumentsDetails on LeadDocuments {
+  id
+  regNo
+  registrationCertificate
+  form26
+  form30
+  form29
+  form36
+  sellerPAN
+  form60
+  sellerAadharCard
+  ownerAddressProof
+  releaseOrder
+  indemnityBond
+  bankAccountProofUrl
+  dealPaymentProofUrl
+  parkingPaymentProofUrl
+  loanForeclosure
+  bankNOC
+  form35
+  insuranceCertificate
+  form28
+}
+
+mutation WriteLeadDocumentUrls($value: AddLeadDocumentsInput!) {
+  addLeadDocuments(upsert: true, input: [$value]) {
+    leadDocuments {
+      ...LeadDocumentsDetails
+    }
+    numUids
+  }
+}
+
+# query LogisticsDetail($regNo: String!) {
+#   getLead(regNo: $regNo) {
+#     id
+#     expectedPickupDate
+#     centre {
+#       id
+#       name
+#       location {
+#         longitude
+#         latitude
+#       }
+#     }
+#     statusEvents {
+#       id
+#       status
+#       createdAt
+#     }
+#     pickup {
+#       id
+#       pickupStartTime
+#       pickEndTime
+#       by {
+#         name
+#         phoneNo
+#       }
+#     }
+#     yard {
+#       id
+#       name
+#       address
+#       locationUrl
+#       spocName
+#       spocNo
+#       location {
+#         longitude
+#         latitude
+#       }
+#     }
+#   }
+# }
+
+# query RtoDetails($regNo: String!) {
+#   getLead(regNo: $regNo) {
+#     id
+#     vehicle {
+#       id
+#       documents {
+#         id
+#         hypothecationProofUrl
+#         rtoVerificationProofUrl
+#         challanUrl
+#         hsrbProofUrl
+#         approvalMailUrl
+#       }
+#     }
+#   }
+# }
+
+# query DealDetails($regNo: String!) {
+#   getLead(regNo: $regNo) {
+#     id
+#     parkingBeneficiary {
+#       id
+#       bankName
+#       accountHolderName
+#       accountNumber
+#       ifscCode
+#     }
+#     proposedBidLimitAmount
+#     finalBidAmount
+#     expectedPickupDate
+#     vehicle {
+#       id
+#       repossessionDate
+#       tempRepossessionDate
+#     }
+#     payments {
+#       id
+#       for
+#       status
+#       amount
+#       createdAt
+#       mode
+#       proofUrl
+#       accountHolderName
+#       bankName
+#       ifsc
+#       accountNo
+#       upiId
+#       receiptUrl
+#       paymentProcessedAt
+#     }
+#     statusEvents {
+#       id
+#       status
+#       createdAt
+#       createdBy {
+#         name
+#       }
+#     }
+#     actualParkingCharges
+#     finalParkingCharges
+#     yard {
+#       id
+#       perDayParkingCharge
+#     }
+#     expenses {
+#       id
+#       description
+#       spentAmount
+#       category
+#       receiptUrl
+#       createdAt
+#       paymentStatus
+#     }
+#   }
+# }
+# query ApplicationDetails($regNo: String!) {
+#   getLead(regNo: $regNo) {
+#     id
+#     regNo
+#     source
+#     statusEvents {
+#       id
+#       status
+#     }
+#     auctionByBank
+#     auctioningAgency {
+#       id
+#       name
+#       spocNo
+#     }
+#   }
+# }
+query VehicleDetails($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+    holdbackAmount
+    loanAmount
+    documentCharges
+    source
+    dealerStance {
+      clearChallan
+      clearBlackList
+      clearHSRP
+    }
+    dealer {
+      id
+      phoneNo
+    }
+    dealershipDocuments {
+      registrationCertificate {
+        isAvailable
+        expectedDate
+      }
+      form26 {
+        isAvailable
+        expectedDate
+      }
+      form28 {
+        isAvailable
+        expectedDate
+      }
+      form29 {
+        isAvailable
+        expectedDate
+      }
+      form30 {
+        isAvailable
+        expectedDate
+      }
+      loanForeclosure {
+        isAvailable
+        expectedDate
+      }
+      bankNOC {
+        isAvailable
+        expectedDate
+      }
+      form35 {
+        isAvailable
+        expectedDate
+      }
+      insuranceCertificate {
+        isAvailable
+        expectedDate
+      }
+      sellerPAN {
+        isAvailable
+        expectedDate
+      }
+      ownerAddressProof {
+        isAvailable
+        expectedDate
+      }
+      sellerAadharCard {
+        isAvailable
+        expectedDate
+      }
+      form36 {
+        isAvailable
+        expectedDate
+      }
+    }
+    vehicle {
+      make
+      model
+      manufacturingDate
+      registrationDate
+      engineNumber
+      chassisNumber
+      isChallanAvailable
+      isBlacklisted
+      isHSRPAvailable
+      isRcAvailable
+      repossessionDate
+      isVehicleFinanced
+      fitnessValidUpto
+      isVehicleInsured
+      financingDetails {
+        id
+        isLoanClosed
+        financerName
+        pendingLoanAmount
+      }
+      insuranceDetails {
+        id
+        insurerName
+        insuranceType
+        policyNumber
+        policyExpiryDate
+      }
+    }
+
+    documentChecklist {
+      registrationCertificate
+      form26
+      loanForeclosure
+      bankNOC
+      form35
+      insuranceCertificate
+      form28
+      form29
+      form30
+      form60
+      sellerPAN
+      sellerAadharCard
+      ownerAddressProof
+      releaseOrder
+      indemnityBond
+      form36
+    }
+  }
+}
+
+query GetFinalParking($id: ID!) {
+  getLead(id: $id) {
+    finalParkingCharges
+    expenses {
+      id
+      description
+      spentAmount
+      category
+      receiptUrl
+      createdAt
+      paymentStatus
+    }
+  }
+}
+
+query statusEventsForTimeline($regNo: String!) {
+  getLead(regNo: $regNo) {
+    id
+    statusEvents {
+      ...LeadStatusEventDetails
+    }
+  }
+}
+
+query getLeadDetailForAdmin($regNo: String) {
+  queryLead(filter: {regNo: {allofterms: $regNo}}) {
+    id
+    regNo
+    centre {
+      name
+    }
+
+    finalBidAmount
+    finalParkingCharges
+    expenses {
+      spentAmount
+      paymentStatus
+    }
+
+    statusEvents {
+      createdAt
+      status
+      createdBy {
+        name
+      }
+      assignTaskTo
+    }
+  }
+}

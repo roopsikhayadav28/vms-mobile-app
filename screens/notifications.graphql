@@ -1,0 +1,54 @@
+fragment NotificationDetails on Notification {
+  id
+  title
+  subtitle
+  createdAt
+  leadStatusEvent {
+    id
+    status
+    lead {
+      id
+      regNo
+      vehicle {
+        id
+        make
+      }
+    }
+  }
+}
+
+query AllNotifications {
+  queryNotification {
+    ...NotificationDetails
+  }
+}
+
+fragment LSEForUpdates on LeadStatusEvent {
+  id
+  createdAt
+  lead {
+    id
+    regNo
+    vehicle {
+      id
+      make
+    }
+  }
+  createdBy {
+    id
+    name
+  }
+  status
+  remarks
+}
+
+query UpdatesForMyRole($myRole: [UserRole!], $offset: Int = 0) {
+  queryLeadStatusEvent(
+    order: {desc: createdAt}
+    filter: {notifyTo: {in: $myRole}}
+    first: 10
+    offset: $offset
+  ) {
+    ...LSEForUpdates
+  }
+}

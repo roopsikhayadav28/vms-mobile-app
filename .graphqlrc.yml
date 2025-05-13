@@ -1,0 +1,5 @@
+# schema: https://green-feather-41151049.ap-south-1.aws.cloud.dgraph.io/graphql
+#schema: http://localhost:8686/graphql
+# schema: http://35.154.33.195:8080/graphql
+schema: http://3.110.182.77:8080/graphql
+documents: '**/**/*.graphql'

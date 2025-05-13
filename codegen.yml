@@ -1,0 +1,20 @@
+# schema: https://green-feather-41151049.ap-south-1.aws.cloud.dgraph.io/graphql
+# schema: http://35.154.33.195:8080/graphql
+
+schema: http://3.110.182.77:8080/graphql
+documents: "**/**/*.graphql"
+generates:
+  ./generated/hooks_and_more.ts:
+    plugins:
+      - typescript
+      - typescript-apollo-client-helpers
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withComponent: false
+      withHOC: false
+      withHooks: true
+      withMutationFn: true
+      withResultType: true
+      maybeValue: T
+      preResolveTypes: true
